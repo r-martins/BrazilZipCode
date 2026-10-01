@@ -152,7 +152,7 @@ class SearchProcessor
         if (!$services) {
             return $list;
         }
-        $sortOrder = json_decode($this->configHelper->getSortOrder(), true);
+        $sortOrder = json_decode((string) $this->configHelper->getSortOrder(), true);
         if (is_array($sortOrder) && count($sortOrder) > 0) {
             $sorted = [];
             foreach ($sortOrder as $key => $item) {

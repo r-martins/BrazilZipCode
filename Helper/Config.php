@@ -5,7 +5,6 @@ namespace MageDev\BrazilZipCode\Helper;
 use Magento\Framework\App\Config\ConfigResource\ConfigInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Cache\TypeListInterface;
-use Magento\PageCache\Model\Cache\Type;
 use Magento\Framework\App\Cache\Type\Config as TypeConfig;
 use Magento\Directory\Model\RegionFactory;
 
@@ -101,7 +100,7 @@ class Config
      */
     public function updateSystemServicesConfig($data)
     {
-        $configServices = json_decode($this->getSortOrder(), true);
+        $configServices = json_decode((string) $this->getSortOrder(), true);
 
         if (!is_array($configServices)) {
             $configServices = [];
@@ -119,9 +118,13 @@ class Config
             $result[$key] = $service;
         }
 
-        $this->configInterface->saveConfig(self::BASE_CONFIG_PATH . self::SERVICE_SORT_ORDER, json_encode($result));
+        $sortOrder = json_encode($result);
+        if ($sortOrder === (string) $this->getSortOrder()) {
+            return;
+        }
+
+        $this->configInterface->saveConfig(self::BASE_CONFIG_PATH . self::SERVICE_SORT_ORDER, $sortOrder);
         $this->cacheTypeList->cleanType(TypeConfig::TYPE_IDENTIFIER);
-        $this->cacheTypeList->cleanType(Type::TYPE_IDENTIFIER);
     }
 
     /**
